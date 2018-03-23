@@ -1,0 +1,55 @@
+<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	$type=M('attribute')->where('id=90')->find();
+</php>
+<div class="mainer">
+       <div class="banner2" style="background:url({$category['icon']|get_cover='path'}) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>{:get_category_e_name(49)}</h2><p>{:get_category_title(49)}</p></div></div></div>
+            <div class="kuang"></div>
+        </div>
+        <div class="page page6">
+            <div class="wrap">
+                <div class="page_tit2">
+                    <h3><span>Company service</span></h3>
+                    <!--<div class="frt div_select">
+                       <select><option>最新一个月</option></select>
+                    </div>-->
+                    <div class="clear"></div>
+                </div>
+                <div class="news_list2">
+                    <ul>
+                    	<volist name="list" id='vo'>
+                    		<php>
+                    			$img=M('document_article')->where("id=$vo[id]")->find();
+                    			$leixing=explode(',',$img['leixing']);
+                    			$arr=array();
+                    			foreach($leixing as $key=>$v)
+                    			{
+                    				$arr[$v]=$type[$v];
+                    			}
+                    		</php>
+	                        <li>
+	                            <div class="img"><a href="{:U('Article/detail?id='.$vo['id'])}"><img src="{$img['img']|get_cover='path'}" /></a></div>
+	                            <div class="text">
+	                                <h3><a href="{:U('Article/detail?id='.$vo['id'])}">{$vo.title}</a></h3>
+	                                <p class="p1"><span class="span1">来自：{$img.laiyuan}</span><span class="span2">时间：{$vo.create_time|date="Y-m-d",###}</span></p>
+	                                <p class="p_text">{$vo.description}</p>
+	                                <p class="p_tips">
+	                                	<volist name='arr' id='co'>
+	                                    <label>{$co}</label>
+	                                    </volist>
+	                                </p>
+	                            </div>
+	                        </li>
+                        </volist>
+                    </ul>
+                </div>
+
+                <div class="pagesize">
+                    <article:page cate="$category['id']" listrow="$category['list_row']" />
+                </div>
+            </div>
+        </div>
+    </div>
+<include file="Public/footer"/>

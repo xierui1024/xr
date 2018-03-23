@@ -1,0 +1,28 @@
+<include file="Public/head"/>
+<include file="Public/header"/>
+    <div class="mainer">
+        <div class="banner2" style="background:url(__STATIC__/jianzhu/img/bg8.jpg) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>News information</h2><p>新闻动态</p></div></div></div>
+            <div class="kuang"></div>
+        </div>
+        <div class="details">
+            <div class="wrap">
+                <div class="tit left">
+                    <h3>{$info.title}</h3>
+                    <p><span class="span1">来自{$info.laiyuan}</span><span class="span2">时间：{$info.create_time|date="Y-m-d",###}</span></p>
+                </div>
+                <div class="text">
+                	{$info.contant}
+                </div>
+                <div class="details_list">
+                	<article:prev name="prev" info="info">
+                		<ul><li><span>上一篇</span><a href="{:U('?id='.$prev['id'])}">{$prev['title']}</a></li></ul>
+                    </article:prev>
+                    <article:next name="next" info="info">
+                    	<ul><li><span>上一篇</span><a href="{:U('?id='.$next['id'])}">{$next['title']}</a></li></ul>
+                    </article:next>
+                </div>
+            </div>
+        </div>
+    </div>
+<include file="Public/footer"/>

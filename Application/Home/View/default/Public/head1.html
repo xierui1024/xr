@@ -1,0 +1,27 @@
+<header>
+    <div class="container">
+        <a href="" class="mbtn"></a>
+        <div class="menu">
+            <ul>
+                <li>
+                <a href="__ROOT__/" class="<if condition="$category['id'] eq '' ">on</if> i">首页<label></label></a>
+                </li>
+                <think:datalist name="category" result="vo" order="sort asc" where="display=1 and pid=0 and status=1 and id !=70">
+                    <li>
+                    <if condition="$category['id'] eq $vo['id'] ">
+                        <a href="{:get_category_url($vo['id'])}" class="on">
+                            {$vo.title}<label></label>
+                        </a>
+                   <else />
+                        <a href="{:get_category_url($vo['id'])}">
+                            {$vo.title}<label></label>
+                        </a>
+                    </if>
+                    </li>
+                </think:datalist>
+            </ul>
+        </div>
+        <div class="logo"><a href=""><img src="__STATIC__/huogong/img/logo.png" alt=""></a></div>
+        <div class="clearfix"></div>
+    </div>
+</header>

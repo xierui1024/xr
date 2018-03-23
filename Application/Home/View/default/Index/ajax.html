@@ -1,0 +1,87 @@
+<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	$type=M('attribute')->where('id=82')->find();
+	$type=parse_field_attr($type['extra']);
+	$category=M('category')->where(array('id'=>53,'status'=>1))->find();
+</php>
+    <div class="mainer">
+        <div class="banner2" style="background:url({$category['icon']|get_cover='path'}) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>Company case</h2><p>公司案例</p></div></div></div>
+            <div class="kuang"></div>
+        </div>
+        <div class="page">
+            <div class="wrap">
+                <div class="page_tit2">
+                    <h3><span>Company service</span></h3>
+                    <div class="frt ul_taggle simplefilter">
+                        <ul>
+                        	<volist name="type" id="vo">
+                        		<if condition="$id eq $i">
+                            <li class="on" data-filter="{$i}"><a href="{:U('Index/ajax?id='.$i)}">{$vo}</a></li>
+	                            <else/>
+	                        <li data-filter="{$i}"><a href="{:U('Index/ajax?id='.$i)}">{$vo}</a></li>    
+	                            </if>
+                            </volist>
+                            <li data-filter="all"><a href="{:get_category_url(53)}">合集</a></li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="case_list">
+                    <ul>
+                    	<volist name="list" id='vo'>
+                    		<php>
+                    			$img=M('document_anli')->where("id=$vo[id]")->find();
+                    		</php>
+                        <li data-category="1" class="filtr-item" >
+                            <a href="{:U('Article/detail?id='.$vo['id'])}">
+                                <div class="img"><img src="{$img['img']|get_cover='path'}" /></div>
+                                <div class="text">
+                                    <h3>{$vo.title} </h3>
+                                    <p>{$vo.description}</p>
+                                    <span class="more">查看详情</span>
+                                </div>
+                            </a>
+                        </li>
+                        </volist>
+                	</ul>
+                </div>
+
+                <div class="pagesize">
+                	<php>
+                		$num=strlen($page);
+                	</php>
+                	<if condition="$num gt 98">
+                	{$page}
+                	</if>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('.case_list ul').filterizr();
+            //Simple filter controls
+            $('.simplefilter li').click(function () {
+                $('.simplefilter li').removeClass('active');
+                $(this).addClass('active');
+            });
+            //Multifilter controls
+            $('.multifilter li').click(function () {
+                $(this).toggleClass('active');
+            });
+            //Shuffle control
+            $('.shuffle-btn').click(function () {
+                $('.sort-btn').removeClass('active');
+            });
+            //Sort controls
+            $('.sort-btn').click(function () {
+                $('.sort-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+
+        })
+    </script>
+<include file="Public/footer"/>

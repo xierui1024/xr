@@ -1,0 +1,125 @@
+﻿<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	$categorys=M('category')->where(array('id'=>41,'status'=>1))->find();
+	//简介
+	$jianjie=document_article('modao_document_jianjie','41','4');
+	//发展历程
+	$licheng=document_article('modao_document_jianjie','43','12');
+	//我们的团队
+	$tuandui=document_article('modao_document_tuandui','42','100');
+</php>
+    <div class="mainer">
+        <div class="banner2" style="background:url({$category['icon']|get_cover='path'}) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>{:get_category_e_name(40)}</h2><p>{:get_category_title(40)}</p></div></div></div>
+            <div class="kuang"></div>
+        </div>
+        <div class="page">
+            <div class="page_tit3">
+                <h3><span>{$categorys['banner_title']}</span></h3>
+                <label class="lbl1"></label>
+                <p>{$categorys['banner_jianjie']}</p>
+                <div class="clear"></div>
+            </div>
+            <div class="about_list">
+                <div class="wrap">
+                	<volist name='jianjie' id='vo' mod='2'>
+                	<eq name='mod' value='0'>
+                    <div class="item">
+                        <div class="img frt"><img src="{$vo['img']|get_cover='path'}" /></div>
+                        <div class="text flt">
+                            <h3>{$vo.title}<br />{$vo.fu_title}</h3>
+                            <label></label>
+                            {$vo.contant}
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    </eq>
+                    <eq name='mod' value='1'>
+                    <div class="item">
+                        <div class="img flt"><img src="{$vo['img']|get_cover='path'}" /></div>
+                        <div class="text frt">
+                            <h2>{$vo.title}<span>{$vo.fu_title}</span></h2>
+                            <label></label>
+                            {$vo.contant}
+                        </div>
+                        <div class="t_item">corporate culture</div>
+                        <div class="clear"></div>
+                    </div>
+                    </eq>
+                    </volist>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page4">
+            <div class="wrap">
+                <div class="page_tit3">
+                    <h3><span>{:get_category_title(42)}</span></h3>
+                    <label class="lbl1"></label>
+                    <div class="clear"></div>
+                </div>
+                <div class="team_list">
+                    <ul>
+                    	<volist name='tuandui' id='vo'>
+                        <li>
+                            <a href="{:U('Article/detail?id='.$vo['id'])}">
+                                <div class="img"><img src="{$vo['img']|get_cover='path'}" /></div>
+                                <div class="text">
+                                    <h3>{$vo.title}</h3>
+                                    <p>{$vo.zhiwei}</p>
+                                    <label></label>
+                                </div>
+                            </a>
+                        </li>
+                       	</volist>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+<!--发展历程-->
+        <div class="page">
+            <div class="wrap">
+                <div class="page_tit3">
+                    <h3><span>{:get_category_title(43)}</span></h3>
+                    <label class="lbl1"></label>
+                    <div class="clear"></div>
+                </div>
+                <div class="his_list">
+                    <div class="line"></div>
+                    <ul>
+	                    <volist name='licheng' id='vo' mod='2'>
+	                	<eq name='mod' value='0'>
+                        <li>
+                            <span></span>
+                            <div class="text">
+                                <h3>{$vo.title}</h3>
+                                <p>{$vo.description}</p>
+                            </div>
+                        </li>
+                        </eq>
+                        <eq name='mod' value='1'>
+                        <li class="on">
+                            <span></span>
+                            <div class="text">
+                                <h3>{$vo.title}</h3>
+                                <p>{$vo.description}</p>
+                            </div>
+                        </li> 
+                        </eq>
+                    </volist>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+<include file="Public/footer"/>

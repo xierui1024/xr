@@ -1,0 +1,147 @@
+<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	//banner
+	$list=document_article('modao_document_banner','45','6');
+	//优势
+	$youshi=document_article('modao_document_youshi','46','1');
+	//案例
+	$case=document_article('modao_document_anli','53','12');
+	//新闻
+	$new=document_article('modao_document_article','49','6');
+</php>
+ <div class="mainer">
+        <div class="banner">
+        	<volist name='list' id='vo'>
+	            <div class="item">
+	            	<div class="img"><img src="{$vo.banner|get_cover='path'}" />
+	            	</div>
+	            	<div class="text">
+	            		<div class="wrap">
+	            			<h2 class="animated fast" data-animation="fadeInDown">{$vo.title}</h2>
+	            			<p class="animated fast" data-animation="fadeInUp">{$vo.description}</p>
+	            		</div>
+	            	</div>
+	            </div>
+           </volist>   
+        </div>
+        <div class="page page1">
+            <div class="page_tit animated fast" data-animation="fadeInDown">
+                <h3>{:get_category_e_name(46)}</h3>
+                <p>{:get_category_title(46)}</p>
+            </div>
+            <div class="page_list page1_list">
+                <div class="wrap">
+                    <div class="list list1">
+                        <div class="item flt animated slow" data-animation="fadeInLeft">
+                            <div class="img"><img src="{$youshi[0][img_1]|get_cover='path'}" /></div>
+                        </div>
+                        <div class="item frt animated more-slow" data-animation="fadeInRight">
+                            <div class="text">
+                                <h3><span class="span1" style="background: url({$youshi[0][tubiao_1]|get_cover='path'}) no-repeat left center;">{$youshi[0]['title_1']}</span></h3>
+                                <p>{$youshi[0]['miaoshu_1']}</p>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="list list2">
+                        <div class="item frt animated fast" data-animation="fadeInUp">
+                            <div class="img"><img src="{$youshi[0][img_2]|get_cover='path'}" /></div>
+                        </div>
+                        <div class="item flt animated fast" data-animation="fadeInDown">
+                            <div class="text">
+                                <h3>{$youshi[0]['title_2']}</h3>
+                                <!--<p>DESIGN HIGH-END</p>-->
+                                <div class="icon"><img src="{$youshi[0][tubiao_2]|get_cover='path'}" /></div>
+                                <p>{$youshi[0]['miaoshu_2']}</p>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="list list3">
+                        <div class="item flt">
+                            <div class="list3_bg"></div>
+                            <div class="img animated slow" data-animation="fadeInDown"><img src="{$youshi[0][img_3]|get_cover='path'}" /></div>
+                        </div>
+                        <div class="item frt">
+                            <div class="text animated slow" data-animation="fadeInLeft">
+                                <h3><span class="span2" style="background: url({$youshi[0][tubiao_3]|get_cover='path'}) no-repeat left center;">{$youshi[0]['title_3']}</span></h3>
+                                <p>{$youshi[0]['miaoshu_3']}</p>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="page page2">
+            <div class="wrap">
+                <div class="page_tit animated slow" data-animation="fadeInDown">
+                    <h3>SUCCESS CASE</h3>
+                    <p>工程案例</p>
+                </div>
+                <div class="page2_list">
+                    <div class="page_owl">
+                    	<volist name='case' id='vo'>
+	                        <div class="item animated slow" data-animation="fadeInUp">
+	                            <div class="img">
+	                            	<a href="{:U('Article/detail?id='.$vo['id'])}">
+	                            		<img src="{$vo['img']|get_cover='path'}" />
+	                            	</a>
+	                            </div>
+	                            <div class="text">
+	                                <h3>{$vo.title}</h3>
+	                                <p>{$vo.description}</p>
+	                                <label></label>
+	                            </div>
+	                        </div>
+	                    </volist>    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page3">
+            <div class="wrap">
+                <div class="page_tit animated slow" data-animation="fadeInLeft">
+                    <h3>INFORMATION AREA</h3>
+                    <p>新闻资讯</p>
+                </div>
+                <div class="news_list animated slow" data-animation="fadeInRight">
+                    <div class="news_lt">
+                        <ul>
+                        	<volist name="new" id='vo'>
+                        	<if condition="$i eq 4">
+                            <li class="on"><span>0{$i}</span></li>
+                            <else/>
+                            <li><span>0{$i}</span></li>
+                            </if>
+                            </volist>
+                        </ul>
+                    </div>
+                    <div class="news_rt">
+                        <div class="news">
+                            <div class="news_owl">
+                            <volist name="new" id='vo'>   
+                                <div class="item">
+                                    <p>{$vo.create_time|date="Y/m/d",###}</p>
+                                    <h3><a href="{:U('Article/detail?id='.$vo['id'])}" style="color: #f75a31;">{$vo.title}</a></h3>
+                                    <div class="text">
+                                        <p>{$vo.description}</p>
+                                    </div>
+                                </div>
+                            </volist>    
+                            </div>
+                            <div class="cur_next"><span></span></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+<include file="Public/footer"/>

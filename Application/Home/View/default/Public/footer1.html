@@ -1,0 +1,65 @@
+<php>
+    $footer = M('document_fot as a')
+            ->join('modao_picture as b on a.img=b.id')
+            ->join('modao_picture as c on a.img1=c.id')
+            ->join('modao_picture as d on a.img2=d.id')
+            ->order('a.id desc')
+            ->field('b.path as image,c.path as img1,d.path as img2,a.id,a.footcont,a.imgname1,a.imgname2,a.copyright,a.copyurl,a.copyname')
+            ->limit(1)
+            ->find();
+    $category = M('category')->where('display=1 and pid=0 and status=1 and id!=70')->field('id,title')->select();
+</php>
+<footer>
+    <div class="a">
+        <div class="container">
+            <div class="list">
+                <ul>
+                    <li>
+                        <div class="text">
+                            <h3><img src="{$footer['image']}" alt=""></h3>
+                            <p>{$footer['footcont']}</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="link">
+                            <ul>
+                                <volist name="category" id="v">
+                                <li><p><a href="{:get_category_url($v['id'])}">{$v['title']}</a></p></li>
+                                </volist>
+                                <div class="clearfix"></div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="qbox">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div class="i">
+                                            <img src="{$footer['img1']}" alt="">
+                                            <p>{$footer['imgname1']}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="i">
+                                            <img src="{$footer['img2']}" alt="">
+                                            <p>{$footer['imgname2']}</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                    <div class="clearfix"></div>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="b">
+        <div class="container">
+            <div class="info">
+                <p>{$footer['copyright']}<a href="{$footer['copyurl']}">{$footer['copyname']}</a></p>
+            </div>
+        </div>
+    </div>
+</footer>

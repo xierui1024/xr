@@ -1,0 +1,93 @@
+<php>
+	$top=M('document_solution_tent')->where('top=1')->order('id desc')->limit(10)->select();
+	$banner=M('document_newsimg as a')
+			->join('modao_picture as b on a.img=b.id')
+			->order('a.id desc')
+			->field('a.*,b.path')
+			->limit(1)
+			->find();
+</php>
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<title>化工</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/custom.css"/>
+		<script src="__STATIC__/huogong/js/script.js"></script>
+		<script src="__STATIC__/huogong/js/custom.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body style="display: none;">
+		<!-------------------------------------- 头部开始 -------------------------------------->
+		<include file="Public/head1"/>
+		<!-------------------------------------- 头部结束 -------------------------------------->
+		<!-------------------------------------- 主体开始 -------------------------------------->
+		<main>
+			<div class="ui-fullpart nopd">
+				<div class="ui-banner">
+					<div class="img" style="background-image: url({$banner['path']});">
+						<div class="tt">
+							<h3>{$banner['adv_name']}</h3>
+							<p>{$banner['adv_ename']}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart">
+				<div class="container">
+					<div class="ui-newslrct">
+						<div class="l">
+							<div class="ui-article">
+								<div class="hd">
+									<h3>{$info['sname']}</h3>
+									<p>{$info['create_time']|date="Y-m-d H:i:s",###}</p>
+								</div>
+								<div class="ct">
+									{$info['content']}
+								</div>
+								<div class="ft">
+									<article:prev name="prev" info="info">
+										<p><span>上一篇&nbsp;&nbsp;</span><a href="{:U('?id='.$prev['id'])}">{$prev['title']}</a></p>
+									</article:prev>
+									<article:next name="next" info="info">
+										<p><span>上一篇&nbsp;&nbsp;</span><a href="{:U('?id='.$next['id'])}">{$next['title']}</a></p>
+									</article:next>
+								</div>
+							</div>
+						</div>
+						<div class="r">
+							<div class="ui-leftnote">
+								<div class="hd">
+									<p>为您推荐</p>
+								</div>
+								<div class="ct">
+									<ul>
+										<volist name="top" id="v">
+										<li>
+											<p><a href="{:U('Article/detail?id='.$v['id'])}">{$v['sname']|msubstr=0,13}</a></p>
+										</li>
+										</volist>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-------------------------------------- 主体结束 -------------------------------------->
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<include file="Public/footer1"/>
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<script>
+			
+		</script>
+	</body>
+</html>

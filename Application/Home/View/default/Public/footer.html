@@ -1,0 +1,48 @@
+  <!-------------------------------------- 尾部开始 -------------------------------------->
+    <div class="footer animated fast" data-animation="fadeInDown">
+        <div class="wrap">
+            <div class="item item1">
+                <label></label>
+                <h3>关于我们</h3>
+                <div class="text">
+                    <p>{$footer['about']}</p>
+                </div>
+            </div>
+            <div class="item">
+                <label></label>
+                <h3>联系我们</h3>
+                <div class="text">
+                    <ul>
+                        <li>传真：{$footer['fax']}</li>
+                        <li>热线电话：{$footer['phone']}</li>
+                        <li>邮箱：{$footer['email']}</li>
+                        <li>地址：{$footer['tel']}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="item">
+                <label></label>
+                <h3>友情链接</h3>
+                <div class="text">
+                    <ul>
+                    	<volist name='arr' id='vo'>
+                        <li><a href="{$vo}" target="_blank">{$Think.lang.$key}</a></li>
+                        </volist>
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="item item4">
+                <label></label>
+                <h3>企业官方微信</h3>
+                <div class="img"><img src="{$footer.wx|get_cover='path'}" /></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="foot">
+            <p><a style="color: #636d76;" href="http://www.miibeian.gov.cn " target="_blank">{:C('WEB_SITE_ICP')}</a> 版权所有 网站建设：莫道网络</p>
+        </div>
+    </div>
+    <!-------------------------------------- 尾部结束 -------------------------------------->
+</body>
+</html>

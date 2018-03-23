@@ -1,0 +1,72 @@
+<php>
+	$banner=M('document_callus as a')
+			->join('modao_picture as b on a.img=b.id')
+			->join('modao_picture as c on a.image=c.id')
+			->order('a.id desc')
+			->field('a.*,b.path,c.path as image')
+			->limit(1)
+			->find();
+</php>
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<title>化工</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/custom.css"/>
+		<script src="__STATIC__/huogong/js/script.js"></script>
+		<script src="__STATIC__/huogong/js/custom.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body style="display: none;">
+		<!-------------------------------------- 头部开始 -------------------------------------->
+		<include file="Public/head1"/>
+		<!-------------------------------------- 头部结束 -------------------------------------->
+		<!-------------------------------------- 主体开始 -------------------------------------->
+		<main>
+			<div class="ui-fullpart nopd">
+				<div class="ui-banner">
+					<div class="img gt" style="background-image: url({$banner['path']});">
+						<div class="tt">
+							<h3>{$banner['adv_name']}</h3>
+							<p>{$banner['adv_ename']}</p>
+						</div>
+						<div class="ct">
+							<p>{$banner['content']}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart" style="padding-top: 0;">
+				<div class="container">
+					<div class="ui-contactus">
+						<div class="view">
+							<img src="" alt="">{$banner['map']}
+						</div>
+						<div class="text">
+							<p class="p1">{$banner['address']}</p>
+							<p class="p2">{$banner['eaddress']}</p>
+							<p class="p3">{$banner['mobile']}</p>
+							<p class="p4">
+								<img src="{$banner['image']}" alt="">
+							</p>
+							<p class="p5">{$banner['www']}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-------------------------------------- 主体结束 -------------------------------------->
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<include file="Public/footer1"/>
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<script>
+			
+		</script>
+	</body>
+</html>

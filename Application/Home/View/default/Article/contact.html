@@ -1,0 +1,122 @@
+﻿<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	//招聘
+	$new=document_article('modao_document_jiaru','52','3');
+</php>
+<div class="mainer">
+       <div class="banner2" style="background:url({$category['icon']|get_cover='path'}) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>{:get_category_e_name(51)}</h2><p>{:get_category_title(51)}</p></div></div></div>
+            <div class="kuang"></div>
+        </div> 
+            <div class="wrap">
+                <div class="contact">
+                    <div class="page_tit3">
+                        <h3><span>联系我们</span></h3>
+                         <label></label>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="text">
+                        <div class="item flt">
+                            <span class="span_tit">您的称呼<label>*</label></span>
+                            <div class="div_input"><input name="name" type="text" /></div>
+                        </div>
+                        <div class="item frt">
+                            <span class="span_tit">您的手机<label>*</label></span>
+                            <div class="div_input"><input name="phone" type="text" /></div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="item">
+                            <span class="span_tit">写下您的需求和建议<label>*</label></span>
+                            <div class="div_textarea"><textarea name="xuqiu"></textarea></div>
+                        </div>
+                        <div class="btn"><a href="javascript:;">提交留言</a></div>
+                    </div>
+                    <script>
+                    	$(document).ready(function()
+                    	{
+                    		var name,phone,xuqiu;
+                    		$('.btn a').click(function()
+                    		{
+                    			name=$("input[name='name']").val();
+                    			phone=$("input[name='phone']").val();
+                    			xuqiu=$("textarea[name='xuqiu']").val();
+                    			if(''==name||''==phone||''==xuqiu)
+                    			{
+                    				alert('请填写完整表单！');
+                    				return false;
+                    			}
+                    			else
+                    			{
+                    				if(!(/^1[3|4|5|7|8]\d{9}$/.test(phone)))
+                    				{
+										alert("手机号码有误，请重填");
+										return false;
+									}
+                    				$.ajax({
+                    					type:"post",
+                    					url:"{:U('Index/biaodan')}",
+                    					data:{'name':name,'phone':phone,'xuqiu':xuqiu},
+                    					async:true,
+                    					success:function(msg)
+                    					{
+                    						if(msg=='success')
+                    						{
+                    							$("input").val('');
+                    							$("textarea[name='xuqiu']").val('');
+                    							alert('信息提交成功');
+                    						}
+                    						else if(msg=='sb')
+                    						{
+                    							alert('请填写完整表单！');
+                    						}
+                    						else
+                    						{
+                    							alert('未知错误！');
+                    						}
+                    					}
+                    					
+                    				});
+                    			}
+                    		});
+                    	});
+                    </script>
+                    <div class="map">
+                        <div class="map_img flt">{$footer['contant']}</div>
+                        <div class="map_text frt">
+                            <h3>上谷设计</h3>
+                            <ul>
+                                <li>联系电话：{$footer['phone']}</li>
+                                <li>邮政编码：{$footer['youbian']}</li>
+                                <li>公司邮箱：{$footer['email']}</li>
+                                <li>工作时间：{$footer['times']}</li>
+                                <li>公司地址：{$footer['tel']}</li>
+                            </ul>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+               <div class="page">
+                   <div class="page_tit3">
+                       <h3><span>加入我们</span></h3>
+                       <label></label>
+                       <div class="clear"></div>
+                   </div>
+                   <div class="contact_list">
+                       <ul>
+                       	<volist name='new' id='vo'>
+                           <li>
+                               <h3>{$vo.title}</h3>
+                               <ul>
+                                   {$vo.jianjie}
+                               </ul>
+                               <a href="{:U('Article/detail?id='.$vo['id'])}">查看岗位要求></a>
+                           </li>
+                        </volist>   
+                       </ul>
+                       <div class="clear"></div>
+                   </div>
+               </div>
+            </div>
+  </div>
+<include file="Public/footer"/>  

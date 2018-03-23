@@ -1,0 +1,49 @@
+<body>
+	<php>
+  	$footer=M('document as a')->join('modao_document_footer as b')
+  			->where("a.id=b.id and a.category_id=54 and a.status=1")
+  			->find();
+  	//友情链接
+  	if(!empty($footer['url']))
+  	{
+  		$url=explode(';',$footer['url']);
+  		$arr=array();
+  		foreach($url as $key=>$v)
+  		{
+  			if($v)
+  			{
+  				$v=explode('&',$v);
+  				$arr[$v[0]]=$v[1];
+  			}
+  		}
+  	}
+  	else
+  	{
+  		$arr=array();
+  	}
+  </php>
+    <div class="header">
+        <div class="wrap">
+            <div class="logo flt"><a href="__ROOT__/"><img src="__STATIC__/jianzhu/img/logo.png" /></a></div>
+            <div class="menu frt">
+                <ul>
+                	<li class="<if condition="$category['id'] eq '' ">on</if> i">
+		                <a href="__ROOT__/">首页<label></label></a>
+		            </li>
+                <think:datalist name="category" result="vo" order="sort asc" where="display=1 and pid=0 and status=1">
+                	<if condition="$category['id'] eq $vo['id'] ">
+                    <li class="on">
+                    <else/>
+                    <li>
+                    </if>
+                        <a href="{:get_category_url($vo['id'])}">
+                        	{$vo.title}<label></label>
+                        </a>
+                    </li>
+                </think:datalist>
+                </ul>
+            </div>
+            <div class="menu_wrap"></div>
+            <div class="clear"></div>
+        </div>
+    </div>

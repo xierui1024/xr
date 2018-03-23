@@ -1,0 +1,507 @@
+<extend name="Public/base" />
+
+<!-- 子导航 -->
+<block name="sidebar">
+    <include file="sidemenu" />
+</block>
+
+<block name="body">
+	<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+	
+	<!--图片裁剪——开始-->
+		<script src="__IMG_JS__/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__IMG_JS__/hammer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__IMG_JS__/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__IMG_JS__/jquery.photoclip.min.js" type="text/javascript" charset="utf-8"></script>
+	<!--图片裁剪——结束-->
+	<div class="main-title cf">
+		<h2>
+			新增{$info.model_id|get_document_model='title'} [
+			<volist name="rightNav" id="nav">
+			<a href="{:U('article/index','cate_id='.$nav['id'])}">{$nav.title}</a>
+			<if condition="count($rightNav) gt $i"><i class="ca"></i></if>
+			</volist>
+			<present name="article">：<a href="{:U('article/index','cate_id='.$info['category_id'].'&pid='.$article['id'])}">{$article.title}</a></present>
+			]
+		</h2>
+	</div>
+	<!-- 标签页导航 -->
+<div class="tab-wrap">
+	<ul class="tab-nav nav">
+		<volist name=":parse_config_attr($model['field_group'])" id="group">
+			<li data-tab="tab{$key}" <eq name="key" value="1">class="current"</eq>><a href="javascript:void(0);">{$group}</a></li>
+		</volist>
+	</ul>
+	<div class="tab-content">
+	<!-- 表单 -->
+	<form id="form" action="{:U('update')}" method="post" class="form-horizontal">
+		<!-- 基础文档模型 -->
+		<volist name=":parse_config_attr($model['field_group'])" id="group">
+        <div id="tab{$key}" class="tab-pane <eq name="key" value="1">in</eq> tab{$key}">
+            <volist name="fields[$key]" id="field">
+                <if condition="$field['is_show'] == 1 || $field['is_show'] == 2">
+                <div class="form-item cf">
+                    <label class="item-label">{$field['title']}<span class="check-tips"><notempty name="field['remark']">（{$field['remark']}）</notempty></span></label>
+                    <div class="controls">
+                        <switch name="field.type">
+                            <case value="num">
+                                <input type="text" class="text input-mid" name="{$field.name}" value="{$field.value}">
+                            </case>
+                            <case value="string">
+                                <input type="text" class="text input-large" name="{$field.name}" value="{$field.value}">
+                            </case>
+                            <case value="textarea">
+                                <label class="textarea input-large">
+                                <textarea name="{$field.name}">{$field.value}</textarea>
+                                </label>
+                            </case>
+                            <case value="date">
+                                <input type="text" name="{$field.name}" class="text date" value="" placeholder="请选择日期" />
+                            </case>
+                            <case value="datetime">
+                                <input type="text" name="{$field.name}" class="text time" value="" placeholder="请选择时间" />
+                            </case>
+                            <case value="bool">
+                                <select name="{$field.name}">
+                                    <volist name=":parse_field_attr($field['extra'])" id="vo">
+                                        <option value="{$key}" <eq name="field.value" value="$key">selected</eq>>{$vo}</option>
+                                    </volist>
+                                </select>
+                            </case>
+                            <case value="select">
+                                <select name="{$field.name}">
+                                    <volist name=":parse_field_attr($field['extra'])" id="vo">
+                                        <option value="{$key}" <eq name="field.value" value="$key">selected</eq>>{$vo}</option>
+                                    </volist>
+                                </select>
+                            </case>
+                            <case value="radio">
+                                <volist name=":parse_field_attr($field['extra'])" id="vo">
+                                	<label class="radio">
+                                    <input type="radio" value="{$key}" <eq name="field.value" value="$key">checked</eq> name="{$field.name}">{$vo}
+                                	</label>
+                                </volist>
+                            </case>
+                            <case value="checkbox">
+                                <volist name=":parse_field_attr($field['extra'])" id="vo">
+                                	<label class="checkbox">
+                                    <input type="checkbox" value="{$key}" name="{$field.name}[]" <eq name="field.value" value="$key">checked</eq>>{$vo}
+                                	</label>
+                                </volist>
+                            </case>
+                            <case value="editor">
+                                <label class="textarea">
+                                <textarea name="{$field.name}">{$field.value}</textarea>
+                                {:hook('adminArticleEdit', array('name'=>$field['name'],'value'=>$field['value']))}
+                                </label>
+                            </case>
+                            <case value="picture">
+                                <div class="controls">
+									<input type="file" id="upload_picture_{$field.name}">
+									<input type="hidden" name="{$field.name}" id="cover_id_{$field.name}"/>
+									<div class="upload-img-box">	
+									<notempty name="data[$field['name']]">
+										<div class="upload-pre-item"><img src="{$data[$field['name']]|get_cover='path'}"/></div>
+									</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+								//上传图片
+							    /* 初始化上传插件 */
+								$("#upload_picture_{$field.name}").uploadify({
+							        "height"          : 30,
+							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+							        "fileObjName"     : "download",
+							        "buttonText"      : "上传图片",
+							        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+							        "width"           : 120,
+							        'removeTimeout'	  : 1,
+							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+							        "onUploadSuccess" : uploadPicture{$field.name},
+							        'onFallback' : function() {
+							            alert('未检测到兼容版本的Flash.');
+							        }
+							    });
+								function uploadPicture{$field.name}(file, data){
+							    	var data = $.parseJSON(data);
+							    	var src = '';
+							        if(data.status){
+							        	$("#cover_id_{$field.name}").val(data.id);
+							        	src = data.url || '__ROOT__' + data.path
+							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
+							        		'<div class="upload-pre-item ert"><img src="' + src + '"/></div><a href="javascript:;" onclick="clearImge_{$field.name}(this)">清除图片</a>'
+							        	);
+							        } else {
+							        	updateAlert(data.info);
+							        	setTimeout(function(){
+							                $('#top-alert').find('button').click();
+							                $(that).removeClass('disabled').prop('disabled',false);
+							            },1500);
+							        }
+							    }
+								function clearImge_{$field.name}(obj){
+					                $(obj).prev().hide()
+					                $(obj).hide();
+					                $("#cover_id_{$field.name}").val('');
+					            }
+								</script>
+                           </case>
+                           <!--多文件上传-->
+                            <case value="file">
+								<div class="controls">
+									<input type="file" id="upload_file_{$field.name}">
+									<input type="hidden" name="{$field.name}" value="" id="file_id_{$field.name}"/>
+									<div class="upload-img-box">
+										<present name="data[$field['name']]">
+											<div class="upload-pre-file"><span class="upload_icon_all"></span>{$data[$field['name']]}</div>
+										</present>
+									</div>
+								</div>
+								<script type="text/javascript">
+								//上传图片
+							    /* 初始化上传插件 */
+								$("#upload_file_{$field.name}").uploadify({
+							        "height"          : 30,
+							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+							        "fileObjName"     : "download",
+							        "buttonText"      : "上传附件",
+							        "uploader"        : "{:U('File/upload',array('session_id'=>session_id()))}",
+							        "width"           : 120,
+							        'removeTimeout'	  : 1,
+							        "onUploadSuccess" : uploadFile{$field.name},
+							        'onFallback' : function() {
+							            alert('未检测到兼容版本的Flash.');
+							        }
+							   });
+								function uploadFile{$field.name}(file, data){
+									var data = $.parseJSON(data);
+							        if(data.status){
+							        	var name = "{$field.name}";
+							        	$("input[name="+name+"]").parent().append('<input type="hidden" name="{$field.name}[]" value="'+data.id+'" id="file_id_{$field.name}"/>');
+							        	
+							        	$("input[name="+name+"]").parent().find('.upload-img-box').append(
+							        		"<div class=\"upload-pre-file\"><span class=\"upload_icon_all\"></span>" + data.info + "</div>"+'<a href="javascript:;" onclick="clearfile_{$field.name}(this)">清除附件</a>'
+							        	);
+							        } else {
+							        	updateAlert(data.info);
+							        	setTimeout(function(){
+							                $('#top-alert').find('button').click();
+							                $(that).removeClass('disabled').prop('disabled',false);
+							            },1500);
+							        }
+							    }
+								function clearfile_{$field.name}(obj){
+					                $(obj).prev().hide()
+					                $(obj).hide();
+					                $("#file_id_{$field.name}").val('');
+					            }
+								</script>
+                            </case>
+                            <!--多图上传-->
+                            <case value="duotu">
+                             	<div class="page-container" >
+									<div id="uploader" class="wu-example">
+										<div class="queueList">
+											<div id="dndArea" class="placeholder">
+												<div id="filePicker" class="webuploader-container">
+													<div class="webuploader-pick">点击选择图片</div>
+														<input type="file" name="file" class="webuploader-element-invisible" multiple="multiple" accept="images/*">
+														<label style="opacity: 0; width: 100%; height: 100%; display: block; cursor: pointer; background: rgb(255, 255, 255);"></label>
+												</div>
+												<p>或将照片拖到这里</p>
+											</div>
+										<ul class="filelist"></ul></div>
+										<div class="statusBar" style="display:none">
+											<div class="progress" style="display: none;">
+												<span class="text">0%</span>
+												<span class="percentage" style="width: 0%;"></span>
+											</div>    
+											<div class="info">共0张(0B)，已上传0张</div>
+											<div class="btns">
+												<div id="filePicker2" class="webuploader-container"><div class="webuploader-pick" id="add">继续添加</div>
+													<input type="file" name="file" class="webuploader-element-invisible" multiple="multiple" accept="images/*">
+													<label style="opacity: 0; width: 100%; height: 100%; display: block; cursor: pointer; background: rgb(255, 255, 255);"></label>
+												</div>
+												<div class="uploadBtn state-pedding" >开始上传</div>
+											</div>
+										</div>
+									</div>
+								</div>
+                             </case>
+                            <!--多图结束-->
+                            <!--图片裁剪-->
+                            <case value='img_caijian'>
+                            	<div class="yc-upload-wrap">
+									<div class="yc-upload-box">
+										<div class="container">
+								        	<div class="row">
+										        <div class="col-md-12 col-sm-12 col-xs-12" style="padding:0;">
+										        	<div class="ycupload-mainbox">
+										        		<div class="ycupload-line"></div>
+										        		<div  style="min-height:1px;">
+										        			<div class="container">
+													        	<div class="row">
+															        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-right:0;padding-left:36px;">
+															        	<div style="min-height:1px;line-height:160px;text-align:center;position:relative;" ontouchstart="">
+															        		<div class="cover-wrap" id="cover-wrap_{$field['name']}" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background: rgba(0, 0, 0, 0.4);z-index: 10000000;text-align:center;">	
+															        			<div class="" style="max-width:100%;margin:100px auto;background-color:#FFFFFF;overflow: hidden;border-radius:4px;">
+															        				<div id="clipArea_{$field['name']}" style="margin:10px;height: 520px;"></div>
+															        				<div class="" style="height:56px;line-height:36px;text-align: center;padding-top:8px;">
+															        					<div id="clipBtn_{$field['name']}" style="cursor:pointer; width:120px;border-radius: 4px;background-color:#26af60;color: #FFFFFF; margin-left: 300px;">保存封面</div>
+															        					<div class="quxiao"  style=" cursor:pointer;width:120px;border-radius: 4px;background-color:#af2652;color: #FFFFFF; margin-left: 500px; margin-top: -35px;">取消</div>
+															        				</div>
+															        			</div>
+															        		</div>
+																        	
+																        	<div class="" style="width:140px;height:32px;border-radius: 4px;background-color:#26af60;color: #FFFFFF;font-size: 14px;text-align:center;line-height:32px;outline:none;margin-left:-35px;position:relative;">
+																        		上传封面
+																        		<input type="file" id="file_{$field['name']}" style="cursor:pointer;opacity:0;filter:alpha(opacity=0);width:100%;height:100%;position:absolute;top:0;left:0;">
+																        	</div>
+																        	<div style="height:10px;"></div>
+																        	<div id="view_{$field['name']}" style="width:100px;height:90px; margin-left: -35px; display: none;"></div>
+															        	</div>
+														        	</div>
+													        	</div>
+												        	</div>
+										        		</div>
+										        	</div>
+										        	
+									        	</div>
+								        	</div>
+							        	</div>
+									</div>
+								</div>
+	    <script type="text/javascript">
+	    $('.quxiao').click(function()
+	    {
+	    	$('.cover-wrap').hide();
+	    });
+	   //清除图片
+	    function clearImges_{$field.name}()
+			{
+				$("#view_{$field['name']}").remove();
+				$("#clear_id_{$field['name']}").remove();
+				
+			};
+		//上传封面
+		var clipArea = new bjj.PhotoClip("#clipArea_{$field['name']}", {
+			size: [{$field['remark']}],// 截取框的宽和高组成的数组。默认值为[260,260]
+			outputSize: [{$field['remark']}], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+			//outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+			file: "#file_{$field['name']}", // 上传图片的<input type="file">控件的选择器或者DOM对象
+			view: "#view_{$field['name']}", // 显示截取后图像的容器的选择器或者DOM对象
+			ok: "#clipBtn_{$field['name']}", // 确认截图按钮的选择器或者DOM对象
+			loadStart: function() {
+				// 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+				$('#cover-wrap_{$field['name']}').fadeIn();
+				console.log("照片读取中");
+			},
+			loadComplete: function() {
+				 // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+				console.log("照片读取完成");
+			},
+			//loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+			clipFinish: function(dataURL) {
+				
+				 // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+				$('#cover-wrap_{$field['name']}').fadeOut();
+				$('#view_{$field['name']}').css('background-size','100% 100%');
+				var src=dataURL.substring(23);
+				$.ajax({
+					type:"post",
+					url:"{:U('Caijian/index')}",
+					data:{'str':src},
+					async:true,
+					success:function(msg)
+					{
+						if('shibai'==msg)
+						{
+							alert("图片上传失败！");
+						}
+						if(1<=msg&&!isNaN(msg))
+						{
+							$(".yc-upload-wrap").append('<input type="hidden" name="{$field.name}" value="'+msg+'" id="clear_id_{$field['name']}"/>');
+							$("#view_{$field['name']}").append('<a href="javascript:;" onclick="clearImges_{$field.name}(this)">清除图片</a>');
+						}
+						
+					}
+				});
+				
+			}
+			
+		});
+		$(document).ready(function()
+		{
+			
+			$("#clipBtn_{$field['name']}").click(function()
+			{
+				$("#view_{$field['name']}").show();
+				
+			});
+		});
+		
+	    </script>
+                            </case>
+                            <default/>
+                            <input type="text" class="text input-large" name="{$field.name}" value="{$field.value}">
+                        </switch>
+                    </div>
+                </div>
+                </if>
+            </volist>
+        </div>
+		</volist>
+
+		<div class="form-item cf">
+			<button class="btn submit-btn ajax-post hidden" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+			<a class="btn btn-return" href="{:U('article/index?cate_id='.$cate_id)}">返 回</a>
+			<if condition="C('OPEN_DRAFTBOX') and (ACTION_NAME eq 'add' or $info['status'] eq 3)">
+			<button class="btn save-btn" url="{:U('article/autoSave')}" target-form="form-horizontal" id="autoSave">
+				存草稿
+			</button>
+			</if>
+			<input type="hidden" name="id" value="{$info.id|default=''}"/>
+			<input type="hidden" name="pid" value="{$info.pid|default=''}"/>
+			<input type="hidden" name="model_id" value="{$info.model_id|default=''}"/>
+			<input type="hidden" name="group_id" value="{$info.group_id|default=''}"/>
+			<input type="hidden" name="category_id" value="{$info.category_id|default=''}">
+		</div>
+	</form>
+	</div>
+</div>
+</block>
+
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+
+$('#submit').click(function(){
+	$('#form').submit();
+});
+
+$(function(){
+    $('.date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true
+    });
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true
+    });
+    showTab();
+
+	<if condition="C('OPEN_DRAFTBOX') and (ACTION_NAME eq 'add' or $info['status'] eq 3)">
+	//保存草稿
+	var interval;
+	$('#autoSave').click(function(){
+        var target_form = $(this).attr('target-form');
+        var target = $(this).attr('url')
+        var form = $('.'+target_form);
+        var query = form.serialize();
+        var that = this;
+
+        $(that).addClass('disabled').attr('autocomplete','off').prop('disabled',true);
+        $.post(target,query).success(function(data){
+            if (data.status==1) {
+                updateAlert(data.info ,'alert-success');
+                $('input[name=id]').val(data.data.id);
+            }else{
+                updateAlert(data.info);
+            }
+            setTimeout(function(){
+                $('#top-alert').find('button').click();
+                $(that).removeClass('disabled').prop('disabled',false);
+            },1500);
+        })
+
+        //重新开始定时器
+        clearInterval(interval);
+        autoSaveDraft();
+        return false;
+    });
+
+	//Ctrl+S保存草稿
+	$('body').keydown(function(e){
+		if(e.ctrlKey && e.which == 83){
+			$('#autoSave').click();
+			return false;
+		}
+	});
+
+	//每隔一段时间保存草稿
+	function autoSaveDraft(){
+		interval = setInterval(function(){
+			//只有基础信息填写了，才会触发
+			var title = $('input[name=title]').val();
+			var name = $('input[name=name]').val();
+			var des = $('textarea[name=description]').val();
+			if(title != '' || name != '' || des != ''){
+				$('#autoSave').click();
+			}
+		}, 1000*parseInt({:C('DRAFT_AOTOSAVE_INTERVAL')}));
+	}
+	autoSaveDraft();
+
+	</if>
+
+});
+</script>
+
+<!--多图-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/datetimepicker/css/demo.css">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/datetimepicker/css/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/datetimepicker/js/webuploader.min.js"></script>
+	
+	<script type="text/javascript">
+	//上传多图
+			$('.uploadBtn').click(function()
+			{
+				var str_data=$('.filelist li').not(".state-complete").find('img').map(function()
+				{
+					return $(this).attr('src').substring(23);
+				}).get().join("#");
+				$.ajax({
+					type:"post",
+					url:"{:U('Duotu/index')}",
+					data:{str:str_data},
+					async:true,
+					success:function(msg)
+					{
+						if(msg!='')
+						{
+							var obj = JSON.parse(msg);
+							$.each(obj, function(k,value)
+							{
+								$(".page-container").append('<input type="hidden" name="lunbo[]"  value="'+value+'"/>');
+							});
+						}
+					}
+				});
+			});
+		
+		//继续添加	
+			$('#filePicker2').click(function()
+			{
+				$(".uploadBtn").removeClass('disabled');
+			});
+	window.webuploader = {
+		config:{
+			thumbWidth: 335, //缩略图宽度，可省略，默认为110
+			thumbHeight: 218, //缩略图高度，可省略，默认为110
+			wrapId: 'uploader', //必填
+		}
+
+	}
+	</script>
+	<script src="__STATIC__/datetimepicker/js/extend-webuploader.js" type="text/javascript"></script>
+	<!--多图结束-->
+</block>

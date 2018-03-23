@@ -1,0 +1,263 @@
+<php>
+	//首页轮播
+	$banner=M('document_indexlb as a')
+			->join('modao_document as b')
+			->join('modao_picture as c')
+			->where('b.id=a.id and a.banner=c.id')
+			->field('a.*,b.title,c.path')
+			->order('a.id desc')
+			->select();
+	//头部关于我们
+	$about=M('document_indexab as a')
+			->join('modao_picture as b on a.img=b.id')
+			->field('a.*,b.path')
+			->order('id desc')
+			->limit(1)
+			->find();
+	//解决方案
+	$wenan=M('document_solution_tent as a')
+			->join('modao_picture as b on a.img=b.id')
+			->join('modao_document as c on c.id=a.id')
+			->where('a.n_type=3 and c.status=1')
+			->order('a.id desc')
+			->field('a.*,b.path')
+			->limit(4)
+			->select();
+	//典型案例
+	$anli=M('document_classic as a')
+			->join('modao_picture as b on a.img=b.id')
+			->join('modao_document as c on c.id=a.id')
+			->where('a.top=2 and c.status=1')
+			->order('a.id desc')
+			->field('a.*,b.path')
+			->limit(4)
+			->select();
+	//最新动态新闻资讯
+	$type=M('attribute')->where('id=175')->find();
+	$type=parse_field_attr($type['extra']);
+	$list=M('document_solution_tent as a')
+			->join('modao_document as b on b.id=a.id')
+			->where('a.n_type=1 and b.status=1')
+			->order('a.id desc')
+			->field('a.*,b.create_time')
+			->limit(4)
+			->select();
+</php>
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<title>化工</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/huogong/css/custom.css"/>
+		<script src="__STATIC__/huogong/js/script.js"></script>
+		<script src="__STATIC__/huogong/js/custom.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body style="display: none;">
+		<!-------------------------------------- 头部开始 -------------------------------------->
+		<include file="Public/head1"/>
+		<!-------------------------------------- 头部结束 -------------------------------------->
+		<!-------------------------------------- 主体开始 -------------------------------------->
+		<main>
+			<div class="ui-fullpart nopd">
+				<div class="ui-homebanner">
+					<div id="carousel-homebanner" class="carousel slide" data-ride="carousel" data-interval="3000">
+					  <ol class="carousel-indicators">
+					    <li data-target="#carousel-homebanner" data-slide-to="0" class="active"></li>
+					    <li data-target="#carousel-homebanner" data-slide-to="1"></li>
+					    <li data-target="#carousel-homebanner" data-slide-to="2"></li>
+					  </ol>
+					  <div class="carousel-inner" role="listbox">
+						  <volist name="banner" id="v">
+							<!--<if condition="$i == $i"><div class="item active"><else /><div class="item"></if>-->
+							<div class="item">
+								<div class="img" style="background-image: url({$v['path']});">
+									<div class="container">
+										<div class="tt">
+											<p class="p1 wow fadeInLeft">{$v['title']}</p>
+											<p class="p2 wow fadeInLeft" data-wow-delay="100ms">{$v['content']}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						  </volist>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart" style="padding-top: 0;">
+				<div class="container">
+					<div class="ui-homeabout wow fadeInUp">
+						<div class="ui-title">
+							<h3>{$about['ztitle']}</h3>
+							<p>{$about['etitle']}</p>
+						</div>
+						<div class="ui-text1">
+							<p>{$about['content']}</p>
+						</div>
+						<div class="ui-more">
+							<p><a href="Article/lists/category/aboutus.html">了解详情</a></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart bg-g">
+				<div class="container">
+					<div class="ui-title">
+						<h3>解决方案</h3>
+						<p>Solution</p>
+					</div>
+					<div class="ui-solution wow fadeInUp">
+						<ul>
+							<volist name="wenan" id="v1">
+							<li>
+								<!--<if condition="$i == 1 or $i == 2"><a href="{:U('Article/detail?id='.$v1['id'])}" class="i"><else /><a href="{:U('Article/detail?id='.$v1['id'])}" class="i r"></if>-->
+								<if condition="$i == 1 or $i == 2"><a href="{:U('/Article/lists/category/solution')}" class="i"><else /><a href="{:U('/Article/lists/category/solution')}" class="i r"></if>
+									<div class="view">
+										<img src="{$v1['path']}" alt="">
+									</div>
+									<div class="text"><i></i>
+										<h3>{$v1['sname']}</h3>
+										<p>{$v1['solution_con']|msubstr=0,50}</p>
+									</div>
+									<div class="clearfix"></div>
+								</a>
+							</li>
+							</volist>
+							<div class="clearfix"></div>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart" style="background-color: #0072c3; padding-bottom: 0;">
+				<div class="ui-title wt">
+					<h3>典型案例</h3>
+					<p>classic case</p>
+				</div>
+				<div class="ui-text1 wt">
+					<p>案例，就是人们在生产生活当中所经历的典型的富有多种意义的事件陈述。它是人们所经历的故事当中的有意截取。<br>案例一般包括三大要素。案例对于人们的学习，研究，生活借鉴等具有重要意义。</p>
+				</div>
+				<div class="ui-homecase wow fadeInUp">
+					<ul>
+						<volist name="anli" id="v2">
+						<li>
+							<a href="Article/lists/category/classic.html" class="i"><img src="{$v2['path']}" alt="">
+								<div class="ct">
+									<h3>{$v2['cname']}</h3>
+									<p>{$v2['content']|msubstr=0,20}</p>
+									<h5><label for="">了解详情</label></h5>
+								</div>
+							</a>
+						</li>
+						</volist>
+						<div class="clearfix"></div>
+					</ul>
+				</div>
+			</div>
+			<div class="ui-fullpart nopd bg-g">
+				<div class="container">
+					<div class="ui-more mb" style="margin-bottom: 40px;">
+						<p><a href="Article/lists/category/classic.html">查看更多</a></p>
+					</div>
+				</div>
+			</div>
+			<div class="ui-fullpart">
+				<div class="container">
+					<div class="ui-homenews wow fadeInUp">
+						<div class="hd">
+							<div class="tabs">
+								<ul role="tablist">
+									<li role="presentation" class="active" id="new"><a href="#news1" role="tab" data-toggle="tab">最新动态</a></li>
+									<li role="presentation" id="zixun"><a href="#news2" role="tab" data-toggle="tab">新闻资讯</a></li>
+									<div class="clearfix"></div>
+								</ul>
+							</div>
+						</div>
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="news1">
+								<div class="ct">
+									<div class="r">
+										<a href="/Article/lists/category/newsmedia" class="news">
+											<div class="img">
+												<img src="{$about['path']}" alt="">
+											</div>
+											<div class="txt">
+												<h3>{$about['ftitle']}</h3>
+												<p>{$about['fcontent']|msubstr=0,50}</p>
+											</div>
+										</a>
+									</div>
+									<div class="l">
+										<div class="list">
+											<ul id="remove">
+												<volist name="list" id="v4">
+												<li>
+													<a href="{:U('Article/detail?id='.$v4['id'])}" class="i">
+														<div class="dt">
+															<p class="p1">{$v4['create_time']|date="d",###}</p>
+															<p class="p2">{$v4['create_time']|date="Y-m",###}</p>
+														</div>
+														<div class="ct">
+															<h3>{$v4['sname']}</h3>
+															<p>{$v4['solution_con']|msubstr=0,70}</p>
+														</div>
+														<div class="clearfix"></div>
+													</a>
+												</li>
+												</volist>
+											</ul>
+										</div>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-------------------------------------- 主体结束 -------------------------------------->
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<include file="Public/footer1"/>
+		<!-------------------------------------- 尾部开始 -------------------------------------->
+		<script>
+            $(".item").each(function(){
+				$('.item').removeClass('active');
+				$(this).addClass('item active');
+            });
+			$('#new').click('on',function(){
+                $.getJSON("{:U('Index/aritcle')}",{id:1},function(data){
+                    console.log(data);
+                    var html = '';
+                    for (var i in data) {
+						html +='<li><a href="{:U("Article/detail/id/'+data[i].id+'")}" class="i">'
+							+'<div class="dt">'+'<p class="p1">'+data[i].d+'</p>'+'<p class="p2">'+data[i].ym+'</p></div>'
+							+'<div class="ct">'+'<h3>'+data[i].sname+'</h3>'+'<p style="position:relative;width:488px; height:48px;overflow:hidden;">'+data[i].solution_con+'</p>'+'</div><div class="clearfix"></div></a></li>';
+                    }
+                    $('#remove li').remove();
+                    $('#remove').append(html);
+				});
+			});
+            $('#zixun').click('on',function(){
+                $.getJSON("{:U('Index/aritcle')}",{id:2},function(data){
+                    console.log(data);
+                    var html = '';
+                    for (var i in data) {
+                        html +='<li><a href="{:U("Article/detail/id/'+data[i].id+'")}" class="i">'
+                            +'<div class="dt">'+'<p class="p1">'+data[i].d+'</p>'+'<p class="p2">'+data[i].ym+'</p></div>'
+                            +'<div class="ct">'+'<h3>'+data[i].sname+'</h3>'+'<p style="position:relative;width:488px; height:48px;overflow:hidden;">'+data[i].solution_con+'</p>'+'</div><div class="clearfix"></div></a></li>';
+                    }
+                    $('#remove li').remove();
+                    $('#remove').append(html);
+                });
+            });
+		</script>
+	</body>
+</html>

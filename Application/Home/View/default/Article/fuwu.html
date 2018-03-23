@@ -1,0 +1,45 @@
+﻿<include file="Public/head"/>
+<include file="Public/header"/>
+<php>
+	$fuwu=document_article('modao_document_fuwu','47','4');
+	$hezuo=document_article('modao_document_hezuo','48','100');
+</php>
+    <div class="mainer">
+        <div class="banner2" style="background:url({$category['icon']|get_cover='path'}) no-repeat center center; background-size:cover;">
+            <div class="item"><div class="text"><div class="wrap"><h2>{:get_category_e_name(39)}</h2><p>{:get_category_title(39)}</p></div></div></div>
+            <div class="kuang"></div>
+        </div> 
+        <div class="page">
+            <div class="wrap">
+                <div class="service_list">
+                    <ul>
+                 	<volist name='fuwu' id='vo'>
+                        <li>
+                            <div class="img"><a href="{:U('Article/detail?id='.$vo['id'])}"><div class="i_img"><img src="{$vo['img']|get_cover='path'}" /></div></a></div>
+                            <div class="text">
+                                <span class="span_tit">service {$i}<label></label></span>
+                                <h3><a href="{:U('Article/detail?id='.$vo['id'])}">{$vo.title}</a></h3>
+                                <p>{$vo.description}</p>
+                                <a href="{:U('Article/detail?id='.$vo['id'])}" class="more">查看详情</a>
+                            </div>
+                            <div class="clear"></div>
+                        </li>
+                    </volist>
+                    </ul>
+                </div>
+
+                <div class="link_list">
+                    <div class="tit"><div class="img"><img src="__STATIC__/jianzhu/img/logo2.png" /><label></label></div><p>Our customers</p></div>
+                    <div class="list">
+                        <ul>
+                        	<volist name='hezuo' id='vo'>
+                            <li><a href="{$vo.url}" target="_blank"><div class="img"><img src="{$vo['img']|get_cover='path'}" /></div></a></li>
+                            </volist>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<include file="Public/footer"/>
